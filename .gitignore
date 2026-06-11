@@ -8,3 +8,4 @@ secrets/*
 *.crt
 *.log
 .DS_Store
+.idea

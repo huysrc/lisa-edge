@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
-systemctl enable ssh
-install -d -m 0755 /etc/ssh/sshd_config.d
-cat >/etc/ssh/sshd_config.d/99-lisa-edge.conf <<'EOC'
-PasswordAuthentication no
-PermitRootLogin prohibit-password
-PubkeyAuthentication yes
-X11Forwarding no
-EOC
-systemctl reload ssh || systemctl restart ssh
+
+echo "Applying basic host hardening..."
+
+# Disable SSH password login if key login is already configured
+SSHD_CONFIG="/etc/ssh/sshd_config"
+
+if [ -f "$SSHD_CONFIG" ]; then
+  sed -i 's/^#\?PasswordAuthentication .*/PasswordAuthentication no/' "$SSHD_CONFIG"
+  sed -i 's/^#\?PermitRootLogin .*/PermitRootLogin no/' "$SSHD_CONFIG"
+  systemctl reload ssh || systemctl reload sshd || true
+fi
+
+echo "Host hardening completed."

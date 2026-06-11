@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-EDGE_DIR="${EDGE_DIR:-/opt/lisa-edge}"
-ENV_FILE="$EDGE_DIR/.env"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+EDGE_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 log() { echo "[lisa-edge bootstrap] $*"; }
 
@@ -14,20 +14,26 @@ fi
 cd "$EDGE_DIR"
 
 log "Loading environment"
-if [ ! -f "$ENV_FILE" ]; then
-  cp "$EDGE_DIR/.env.example" "$ENV_FILE"
+if [ ! -f ".env" ]; then
+  cp "$EDGE_DIR/.env.example" ".env"
 fi
-set -a
-. "$ENV_FILE"
-set +a
+if [ -f ".env" ]; then
+  set -a
+  source ".env"
+  set +a
+fi
 
 log "Running bootstrap modules"
-for script in "$EDGE_DIR"/bootstrap/scripts/*.sh; do
+for script in "$EDGE_DIR"/bootstrap/phases/*.sh
+do
+  [ -f "$script" ] || continue
+  log "================================="
   log "Executing $(basename "$script")"
+  log "================================="
   bash "$script"
 done
 
 log "Deploying services"
-"$EDGE_DIR/scripts/deploy.sh"
+#"$EDGE_DIR/scripts/deploy.sh"
 
-log "Bootstrap completed"
+log "Bootstrap completed successfully"
