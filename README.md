@@ -1,5 +1,10 @@
 # LISA Edge
 
+> Infrastructure-as-Code repository for the LISA Smart Home Edge Platform.
+> Provides unattended Ubuntu provisioning, automated bootstrap, Docker service deployment,
+> backup/recovery workflows, VPN connectivity, MQTT, Thread Border Router, NUT integration
+> and production-ready edge services running on ZimaBoard 2.
+
 LISA Edge is the lightweight edge infrastructure platform for the LISA Smart Home ecosystem.
 
 It targets ZimaBoard 2 running Ubuntu Server on SSD, while the internal eMMC is kept as a Rescue OS for recovery and reinstall operations.
@@ -14,7 +19,7 @@ Infrastructure-as-Code repository for the LISA Smart Home Edge Platform. Provide
 - eMMC reserved for Rescue OS
 - USB autoinstall support
 - Fully reproducible bootstrap
-- Docker Compose based services
+- Docker Compose-based services
 - Lightweight services only
 - VLAN-aware deployment
 - Backup and restore first
@@ -46,7 +51,7 @@ USB autoinstall
   -> run healthcheck
 ```
 
-## Quick start after OS install
+## Quick start after OS installation
 
 ```bash
 sudo git clone https://github.com/YOUR_ORG/lisa-edge.git /opt/lisa-edge
@@ -95,3 +100,12 @@ With Thread Border Router:
 ```bash
 sudo LISA_COMPOSE_PROFILES=otbr ./scripts/deploy.sh
 ```
+## License
+
+MIT License
+
+Copyright (c) 2026 Huy Nguyen
+
+This repository provides the infrastructure layer of the LISA Smart Home ecosystem.
+
+The license applies only to this repository and does not grant rights to proprietary LISA components, models, datasets, or private services.

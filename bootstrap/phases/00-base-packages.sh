@@ -14,15 +14,15 @@ apt-get install -y \
 
 #Package          Giữ?          Lý do
 #-------------------------------------------------------------------------------------
-#curl             ✅            tải Docker installer, healthcheck
+#curl             ✅
 #git              ✅            clone/pull repo
 #ca-certificates  ✅            HTTPS/TLS
-#openssh-server   ✅            headless remote access
-#htop             ⚠️ optional    tiện debug, không bắt buộc
-#jq               ⚠️ optional    parse JSON script, chưa cần thì bỏ
-#rsync            ⚠️ optional    backup/restore, nên chuyển sang backup script install
-#ufw              ⚠️ optional    nếu firewall chính là UniFi thì không bắt buộc
-#chrony           ⚠️ optional    chỉ cần nếu ZimaBoard làm NTP helper
-#avahi-daemon     ⚠️ optional    chỉ cần nếu cần mDNS/Thread/HomeKit discovery
-#gnupg            ❌            không cần nếu dùng get.docker.com
-#lsb-release      ❌            không cần trong flow hiện tại
+#openssh-server   ✅            Headless remote access (not need if user-data's SSH install-server is true)
+#htop             ⚠️ optional    Debug
+#jq               ⚠️ optional    Parse JSON script
+#rsync            ⚠️ optional    backup/restore, will be installed by the 60-backup-tools.sh script
+#ufw              ⚠️ optional    Not need if using UniFi network
+#chrony           ⚠️ optional    Only need if ZimaBoard work as NTP helper
+#avahi-daemon     ⚠️ optional    Needed for mDNS/Thread/HomeKit discovery
+#gnupg            ❌            Not need because will use get.docker.com
+#lsb-release      ❌            Not need in current flow
