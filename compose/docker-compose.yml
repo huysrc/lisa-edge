@@ -1,8 +1,8 @@
-name: ${COMPOSE_PROJECT_NAME:-lisa-edge}
+name: lisa-edge-core
 
 services:
   mosquitto:
-    image: eclipse-mosquitto:2
+    image: eclipse-mosquitto:latest
     container_name: lisa-mqtt
     restart: unless-stopped
     ports:
@@ -19,10 +19,58 @@ services:
       retries: 3
 
   uptime-kuma:
-    image: louislam/uptime-kuma:1
-    container_name: lisa-uptime-kuma
+    image: louislam/uptime-kuma:latest
+    container_name: lisa-uptime
     restart: unless-stopped
     ports:
       - "${UPTIME_KUMA_PORT:-3001}:3001"
     volumes:
       - ${DATA_ROOT:-/srv/lisa-edge}/docker/volumes/uptime-kuma:/app/data
+
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: lisa-ha
+    restart: unless-stopped
+    network_mode: host
+    privileged: true
+    volumes:
+      - ${DATA_ROOT:-/srv/lisa-edge}/docker/volumes/homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+
+  zigbee2mqtt:
+    image: koenkk/zigbee2mqtt:latest
+    container_name: lisa-zigbee2mqtt
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+    ports:
+      - "${ZIGBEE2MQTT_PORT:-8080}:8080"
+    volumes:
+      - ${DATA_ROOT:-/srv/lisa-edge}/docker/volumes/zigbee2mqtt:/app/data
+      - /run/udev:/run/udev:ro
+    devices:
+      - /dev/serial/by-id/${ZIGBEE_DONGLE:-dev/ttyACM0}:/dev/ttyUSB0
+    environment:
+      - TZ=America/Los_Angeles
+
+  node-red:
+    image: nodered/node-red:latest
+    container_name: lisa-node-red
+    restart: unless-stopped
+    ports:
+      - "${NODE_RED_PORT:-1880}:1880"
+    volumes:
+      - ${DATA_ROOT:-/srv/lisa-edge}/docker/volumes/node-red:/data
+
+  tailscale:
+    image: tailscale/tailscale:latest
+    container_name: lisa-tailscale
+    network_mode: host
+    privileged: true
+    restart: unless-stopped
+    environment:
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_EXTRA_ARGS=--advertise-routes=192.168.10.0/24,192.168.20.0/24,192.168.30.0/24,192.168.40.0/24
+    volumes:
+      - ${DATA_ROOT:-/srv/lisa-edge}/docker/volumes/tailscale:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun

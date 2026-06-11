@@ -6,8 +6,12 @@ Recommended placement:
 - Service interface: VLAN_SVC 90
 
 Allow only required flows:
-
-- VLAN_CTRL 30 -> VLAN_SVC 90: MQTT, OTBR REST/API if needed
-- VLAN_MAIN 10 -> VLAN_SVC 90: dashboards by allowlist only
-- VLAN_MGMT 99 -> ZimaBoard: SSH/admin
-- Internet -> ZimaBoard: deny
+```text
+VLAN_MAIN 10  → VLAN_SVC 90: allowed only required dashboards/API
+VLAN_CTRL 30  → VLAN_SVC 90: MQTT/OTBR/NTP/DNS/API as needed
+VLAN_HUB 40   → VLAN_SVC 90: only required local integrations
+VLAN_CAM_U 60 → VLAN_SVC 90: deny by default
+VLAN_MGMT 99  → ZimaBoard: SSH/admin allowed
+VPN           → VLAN_MGMT 99 / VLAN_SVC 90 admin ports only
+Internet      → ZimaBoard dashboards: deny
+```

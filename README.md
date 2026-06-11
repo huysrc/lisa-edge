@@ -68,11 +68,10 @@ Core services:
 - Mosquitto MQTT
 - Uptime Kuma
 - NUT client/server placeholder
+- OTBR (OpenThread Border Router)
 - Traefik internal reverse proxy placeholder
-
-Optional profile:
-
-- OpenThread Border Router
+- Backup Agent
+- LISA Gateway
 
 Thread Border Router is intentionally isolated into a profile because it depends on the real radio path and backbone network interface.
 
