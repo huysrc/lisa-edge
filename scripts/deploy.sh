@@ -1,19 +1,33 @@
 #!/usr/bin/env bash
 set -euo pipefail
-EDGE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$EDGE_DIR"
+EDGE_REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$EDGE_REPO"
 
-if [ -f .env ]; then
-  set -a
-  . ./.env
-  set +a
+if [ ! -f .env ]; then
+  cp .env.example .env
+  chmod 0600 .env
 fi
+
+set -a
+# shellcheck disable=SC1091
+. ./.env
+set +a
 
 FILES=(-f compose/docker-compose.yml)
-if [[ " ${LISA_COMPOSE_PROFILES:-} " == *" otbr "* ]]; then
-  FILES+=(-f compose/profiles/otbr.yml)
-fi
+for profile in ${LISA_COMPOSE_PROFILES:-}; do
+  case "$profile" in
+    otbr|ha|zigbee|node-red|vpn-tailscale)
+      FILES+=(-f "compose/profiles/$profile.yml")
+      ;;
+    "") ;;
+    *)
+      echo "Unknown LISA_COMPOSE_PROFILES entry: $profile" >&2
+      echo "Allowed: otbr homeassistant zigbee2mqtt node-red vpn-tailscale" >&2
+      exit 1
+      ;;
+  esac
+done
 
-COMPOSE_PROFILES="${LISA_COMPOSE_PROFILES:-}" docker compose --env-file .env "${FILES[@]}" pull || true
-COMPOSE_PROFILES="${LISA_COMPOSE_PROFILES:-}" docker compose --env-file .env "${FILES[@]}" up -d
-"$EDGE_DIR/scripts/healthcheck.sh"
+docker compose --env-file .env "${FILES[@]}" pull || true
+docker compose --env-file .env "${FILES[@]}" up -d
+"$EDGE_REPO/scripts/healthcheck.sh"

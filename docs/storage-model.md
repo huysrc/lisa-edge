@@ -8,7 +8,7 @@ Recommended mount points:
 
 ```text
 /opt/lisa-edge   Git repo
-/srv/lisa-edge   Docker volumes, logs, backups cache
+/svr/lisa-edge   Docker volumes, logs, backups cache
 ```
 
 Avoid heavy writes to eMMC.

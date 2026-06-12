@@ -79,12 +79,12 @@ Thread Border Router is intentionally isolated into a profile because it depends
 
 ```text
 SSD:
-  /opt/lisa-edge
-  /srv/lisa-edge
+  /opt/lisa-edge    : code/config template from Git
+  /svr/lisa-edge    : data, volume, generated secrets, runtime files
   Docker
   service volumes
 
-EMMC:
+eMMC:
   Rescue OS only
 ```
 

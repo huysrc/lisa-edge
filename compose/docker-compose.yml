@@ -2,75 +2,40 @@ name: lisa-edge-core
 
 services:
   mosquitto:
-    image: eclipse-mosquitto:latest
+    image: eclipse-mosquitto:2
     container_name: lisa-mqtt
     restart: unless-stopped
     ports:
-      - "${MQTT_PORT:-1883}:1883"
-      - "${MQTT_WS_PORT:-9001}:9001"
+      - "${MQTT_BIND_ADDR:-0.0.0.0}:${MQTT_PORT:-1883}:1883"
+      - "${MQTT_BIND_ADDR:-0.0.0.0}:${MQTT_WS_PORT:-9001}:9001"
     volumes:
-      - ${DATA_ROOT:-/srv/lisa-edge}/docker/volumes/mosquitto/config:/mosquitto/config
-      - ${DATA_ROOT:-/srv/lisa-edge}/docker/volumes/mosquitto/data:/mosquitto/data
-      - ${DATA_ROOT:-/srv/lisa-edge}/docker/volumes/mosquitto/log:/mosquitto/log
+      - ${DATA_ROOT:-/svr/lisa-edge}/docker/volumes/mosquitto/config:/mosquitto/config
+      - ${DATA_ROOT:-/svr/lisa-edge}/docker/volumes/mosquitto/data:/mosquitto/data
+      - ${DATA_ROOT:-/svr/lisa-edge}/docker/volumes/mosquitto/log:/mosquitto/log
     healthcheck:
-      test: ["CMD-SHELL", "mosquitto_sub -h 127.0.0.1 -t '$$SYS/#' -C 1 -W 5 >/dev/null 2>&1 || exit 1"]
+      test: ["CMD-SHELL", "mosquitto_sub -h 127.0.0.1 -u \"$${MQTT_USERNAME:-lisa}\" -P \"$${MQTT_PASSWORD:-changeme}\" -t '$$SYS/#' -C 1 -W 5 >/dev/null 2>&1 || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
+    environment:
+      - MQTT_USERNAME=${MQTT_USERNAME:-lisa}
+      - MQTT_PASSWORD=${MQTT_PASSWORD:-changeme}
 
   uptime-kuma:
-    image: louislam/uptime-kuma:latest
+    image: louislam/uptime-kuma:1
     container_name: lisa-uptime
     restart: unless-stopped
     ports:
-      - "${UPTIME_KUMA_PORT:-3001}:3001"
+      - "${UPTIME_KUMA_BIND_ADDR:-0.0.0.0}:${UPTIME_KUMA_PORT:-3001}:3001"
     volumes:
-      - ${DATA_ROOT:-/srv/lisa-edge}/docker/volumes/uptime-kuma:/app/data
+      - ${DATA_ROOT:-/svr/lisa-edge}/docker/volumes/uptime-kuma:/app/data
 
-  homeassistant:
-    image: ghcr.io/home-assistant/home-assistant:stable
-    container_name: lisa-ha
+  backup-helper:
+    image: alpine:3.20
+    container_name: lisa-backup-helper
     restart: unless-stopped
-    network_mode: host
-    privileged: true
+    command: ["/bin/sh", "-c", "while true; do sleep 3600; done"]
     volumes:
-      - ${DATA_ROOT:-/srv/lisa-edge}/docker/volumes/homeassistant:/config
-      - /etc/localtime:/etc/localtime:ro
-
-  zigbee2mqtt:
-    image: koenkk/zigbee2mqtt:latest
-    container_name: lisa-zigbee2mqtt
-    restart: unless-stopped
-    depends_on:
-      - mosquitto
-    ports:
-      - "${ZIGBEE2MQTT_PORT:-8080}:8080"
-    volumes:
-      - ${DATA_ROOT:-/srv/lisa-edge}/docker/volumes/zigbee2mqtt:/app/data
-      - /run/udev:/run/udev:ro
-    devices:
-      - /dev/serial/by-id/${ZIGBEE_DONGLE:-dev/ttyACM0}:/dev/ttyUSB0
-    environment:
-      - TZ=America/Los_Angeles
-
-  node-red:
-    image: nodered/node-red:latest
-    container_name: lisa-node-red
-    restart: unless-stopped
-    ports:
-      - "${NODE_RED_PORT:-1880}:1880"
-    volumes:
-      - ${DATA_ROOT:-/srv/lisa-edge}/docker/volumes/node-red:/data
-
-  tailscale:
-    image: tailscale/tailscale:latest
-    container_name: lisa-tailscale
-    network_mode: host
-    privileged: true
-    restart: unless-stopped
-    environment:
-      - TS_STATE_DIR=/var/lib/tailscale
-      - TS_EXTRA_ARGS=--advertise-routes=192.168.10.0/24,192.168.20.0/24,192.168.30.0/24,192.168.40.0/24
-    volumes:
-      - ${DATA_ROOT:-/srv/lisa-edge}/docker/volumes/tailscale:/var/lib/tailscale
-      - /dev/net/tun:/dev/net/tun
+      - ${DATA_ROOT:-/svr/lisa-edge}:/svr/lisa-edge:ro
+      - ${BACKUP_DEST:-/svr/lisa-edge/backups}:/backups
+      - ./services/backup-helper:/helper:ro

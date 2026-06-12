@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-EDGE_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 log() { echo "[lisa-edge bootstrap] $*"; }
 
@@ -11,11 +11,11 @@ if [ "$(id -u)" -ne 0 ]; then
   exit 1
 fi
 
-cd "$EDGE_DIR"
+cd "$REPO_DIR"
 
 log "Loading environment"
 if [ ! -f ".env" ]; then
-  cp "$EDGE_DIR/.env.example" ".env"
+  cp "$REPO_DIR/.env.example" ".env"
 fi
 if [ -f ".env" ]; then
   set -a
@@ -24,7 +24,7 @@ if [ -f ".env" ]; then
 fi
 
 log "Running bootstrap modules"
-for script in "$EDGE_DIR"/bootstrap/phases/*.sh
+for script in "$REPO_DIR"/bootstrap/phases/*.sh
 do
   [ -f "$script" ] || continue
   log "================================="
@@ -34,6 +34,6 @@ do
 done
 
 log "Deploying services"
-#"$EDGE_DIR/scripts/deploy.sh"
+"$REPO_DIR/scripts/deploy.sh"
 
 log "Bootstrap completed successfully"
