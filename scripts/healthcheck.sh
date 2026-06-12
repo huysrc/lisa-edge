@@ -28,9 +28,9 @@ docker ps --format '{{.Names}}' | grep -q '^lisa-uptime$'
 docker ps --format '{{.Names}}' | grep -q '^lisa-backup-helper$'
 
 echo "[LISA] Checking MQTT port..."
-check_tcp 127.0.0.1 "${MQTT_PORT:-1883}"
+check_tcp ${HEALTHCHECK_BIND_ADDR:-127.0.0.1} "${MQTT_PORT:-1883}"
 
 echo "[LISA] Checking Uptime Kuma port..."
-check_tcp 127.0.0.1 "${UPTIME_KUMA_PORT:-3001}"
+check_tcp ${HEALTHCHECK_BIND_ADDR:-127.0.0.1} "${UPTIME_KUMA_PORT:-3001}"
 
 echo "[LISA] Edge core stack healthy."

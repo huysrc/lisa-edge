@@ -36,7 +36,7 @@ tar --warning=no-file-changed \
   -czf "$ARCHIVE" \
   "$EDGE_REPO/.env" \
   "$EDGE_REPO/compose" \
-  "$EDGE_REPO/services" \
+  "$EDGE_REPO/config" \
   "$DATA_ROOT/data" \
   "$DATA_ROOT/docker" \
   "$DATA_ROOT/state" || status=$?

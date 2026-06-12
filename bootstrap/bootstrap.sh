@@ -35,5 +35,6 @@ done
 
 log "Deploying services"
 "$REPO_DIR/scripts/deploy.sh"
+"$REPO_DIR/scripts/install-systemd.sh"
 
 log "Bootstrap completed successfully"

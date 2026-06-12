@@ -22,7 +22,7 @@ for profile in ${LISA_COMPOSE_SERVICES:-}; do
     "") ;;
     *)
       echo "Unknown LISA_COMPOSE_SERVICES entry: $profile" >&2
-      echo "Allowed: otbr homeassistant zigbee2mqtt node-red vpn-tailscale" >&2
+      echo "Allowed: otbr ha zigbee2mqtt node-red vpn-tailscale" >&2
       exit 1
       ;;
   esac
