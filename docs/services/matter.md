@@ -71,18 +71,18 @@ With Matter:
 
 ## Matter and LISA
 
-LISA Edge does not replace Matter.
+LISA Edge does not replace Matter controllers.
 
 Instead, LISA Edge provides infrastructure services that support Matter deployments.
 
-Examples:
+It provides supporting infrastructure:
 
-* OTBR
-* MQTT
-* DNS helpers
-* NTP
-* VPN access
-* Monitoring
+- OTBR for Matter-over-Thread
+- MQTT for local integrations
+- DNS and NTP helpers
+- VPN access
+- Monitoring
+- Backup and recovery
 
 LISA Brain interacts with devices through supported integrations while the Edge layer provides reliable local connectivity.
 

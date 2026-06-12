@@ -1,4 +1,10 @@
 #cloud-config
+# LISA Edge Ubuntu autoinstall template.
+#
+# WARNING:
+# This file can wipe disks. Review the storage section before use.
+# Replace placeholders for hostname, SSH key, disk serial/model, and repo URL.
+
 autoinstall:
   version: 1
   locale: en_US.UTF-8
@@ -10,15 +16,18 @@ autoinstall:
     hostname: LISA-EDGE
     username: lisa
     # Temporary console password: ChangeMe123!
+    # Replace this hash before production use.
     # SSH password login is disabled below.
     password: "$6$QWnRj98zWZbExza3$5LAYPxsnYH26jKNur5P3etIjgiHiLIIAj1qPFViSSn.Pbnir.lyXWnplCoaJ9YReVapx.vjawtD1GOjR6I1PD/"
-
 
   ssh:
     install-server: true
     allow-pw: false
     authorized-keys:
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINjfuH5/II3sPBYVjLj7l8EltcYgrHkKD/8Dq31IQq8G
+      # Replace with your public key.
+      # Example:
+      # - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINjfuH5/II3sPBYVjLj7l8EltcYgrHkKD/8Dq31IQq8G
+      - ssh-ed25519 REPLACE_WITH_YOUR_PUBLIC_KEY lisa-edge-admin
 
   packages:
     - ca-certificates
@@ -31,7 +40,10 @@ autoinstall:
       - type: disk
         id: install_disk
         match:
-          serial: S2RANX0H6483662
+          # Replace with your target disk serial or model.
+          # Find it with: lsblk -o NAME,MODEL,SERIAL,SIZE
+          # Example: "serial: S2RANX0H6483662"
+          serial: REPLACE_WITH_TARGET_DISK_SERIAL
         ptable: gpt
         wipe: superblock-recursive
         preserve: false

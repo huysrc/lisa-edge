@@ -20,7 +20,7 @@ apt-get install -y \
 #openssh-server   ✅            Headless remote access (not need if user-data's SSH install-server is true)
 #htop             ⚠️ optional    Debug
 #jq               ⚠️ optional    Parse JSON script
-#rsync            ⚠️ optional    backup/restore, will be installed by the 60-backup-tools.sh script
+#rsync            ⚠️ optional    backup/restore, will be installed by the 50-backup-tools.sh script
 #ufw              ⚠️ optional    Not need if using UniFi network
 #chrony           ⚠️ optional    Only need if Reference deployment work as NTP helper
 #avahi-daemon     ⚠️ optional    Needed for mDNS/Thread/HomeKit discovery

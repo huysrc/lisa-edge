@@ -1,8 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Storage layout
-# eMMC (64GB)
+# Generic LISA Edge storage layout.
+#
+# Recommended:
+#   /opt/lisa-edge  - Git repository
+#   /srv/lisa-edge  - Docker volumes, state, logs, backup cache
+#
+# Use SSD or reliable persistent storage for DATA_ROOT when possible.
+# Avoid heavy writes to weak embedded storage.
+#
+# ZimaBoard's storage layout example:
+# eMMC (Internal)
 # └─ Rescue OS
 #    ├─ Ubuntu Server minimal
 #    ├─ SSH
@@ -10,7 +19,7 @@ set -euo pipefail
 #    ├─ Recovery scripts
 #    └─ Reinstall USB support
 #
-# SSD (500GB / 1TB)
+# SSD (External: 500GB / 1TB)
 # └─ Production OS
 #    ├─ Ubuntu Server
 #    ├─ Docker

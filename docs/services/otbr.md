@@ -1,5 +1,7 @@
 # OpenThread Border Router (OTBR)
 
+> OTBR connects a Thread mesh network to the IP network.
+
 ## What is OTBR?
 
 OTBR (OpenThread Border Router) is the bridge between:
@@ -7,63 +9,73 @@ OTBR (OpenThread Border Router) is the bridge between:
 * Your IP network (Ethernet/Wi-Fi)
 * Your Thread mesh network
 
-Without a Border Router, Thread devices cannot communicate with the rest of your smart home network.
-
-In LISA Edge, OTBR is considered a critical infrastructure service.
-
----
-
-## Hardware Requirements
-
-OTBR requires:
-
-- Linux
-- Docker
-- Supported Thread RCP radio
-
-OTBR does NOT require ZimaBoard.
-Any compatible Linux host may be used.
-
-Recommended:
-
-* ZimaBoard 2
-* Ubuntu Server LTS
-* Thread RCP radio
-
 Examples:
 
+- LISA Edge OTBR
+- Home Assistant OTBR
+- Apple Thread Border Router
+- Google Thread Border Router
+
+Multiple border routers may coexist, but dataset management must be handled carefully.
+
+Without a Border Router, Thread devices cannot communicate with the rest of your smart home network.
+
+> In LISA Edge, OTBR is an optional service for Matter-over-Thread environments.
+
+## Role in LISA Edge
+
+OTBR is important, but it is only one service in the LISA Edge stack.
+
+Use OTBR when you need Thread devices or Matter-over-Thread devices.
+
+## Requirements
+
+- Thread radio flashed with RCP firmware
+- Linux host / Docker
+- Stable `/dev/serial/by-id/...` device path
+- IPv6 enabled on the host
+- Correct backbone interface, usually the Reference deployment service-facing NIC
+
+Hardware Examples:
 * nRF52840 USB Dongle
 * Home Assistant SkyConnect (RCP mode)
 * Sonoff ZBDongle-E (RCP mode)
 
----
+> LISA Edge does not require ZimaBoard for OTBR. Any compatible Linux host may be used.
 
-## Why Thread Matters
+## Enable OTBR
 
-Thread is the preferred transport layer for Matter devices.
+Find radio device:
 
-Benefits:
+```bash
+ls -l /dev/serial/by-id/
+```
 
-* Low power consumption
-* Self-healing mesh network
-* IPv6 native
-* Local-first communication
-* Vendor independent
+In `.env`:
 
-Examples:
+```env
+THREAD_RADIO_DEVICE=/dev/serial/by-id/usb-YOUR-RCP-RADIO
+THREAD_RADIO_URL=spinel+hdlc+uart:///dev/ttyThreadRCP?uart-baudrate=460800
+OTBR_BACKBONE_IF=enp1s0
+LISA_COMPOSE_SERVICES="otbr"
+```
 
-* Eve
-* Nanoleaf
-* Aqara Matter devices
-* Future Matter sensors
+Deploy:
 
----
+```bash
+sudo ./scripts/deploy.sh
+```
 
-## Understanding the Thread Dataset
+**Notes**
 
-The Thread Dataset is the identity of the network.
+Use `openthread/border-router` for real deployments. Do not use `openthread/otbr` for production because it is marked as a testing/simulation image by Docker Hub.
 
-It contains:
+
+## Thread Dataset
+
+The Thread Active Operational Dataset is the identity of the Thread network.
+
+It contains sensitive network material (such as the Network Key and PSKc):
 
 * Network Key
 * PSKc
@@ -80,7 +92,7 @@ Think of it as:
 
 combined into one object.
 
----
+Losing the dataset can require re-pairing Matter-over-Thread devices.
 
 ## IMPORTANT
 
@@ -91,8 +103,6 @@ If the dataset is lost:
 * Rebuilding OTBR alone does NOT restore the network.
 
 The dataset must be backed up.
-
----
 
 ## Automatic Backup
 
@@ -114,8 +124,6 @@ Latest backup:
 latest.dataset.hex
 ```
 
----
-
 ## Disaster Recovery
 
 Example:
@@ -126,16 +134,16 @@ Example:
 
 Recovery process:
 
-1. Install Ubuntu.
-2. Clone lisa-edge.
-3. Restore latest.dataset.hex.
-4. Run deploy.sh.
+1. Install Linux.
+2. Clone LISA Edge.
+3. Restore `.env`.
+4. Copy `latest.dataset.hex` to the OTBR backup directory.
+5. Enable the OTBR service profile.
+6. Deploy.
 
 OTBR restores the dataset automatically.
 
 Existing Thread devices reconnect without re-pairing.
-
----
 
 ## Production Recommendations
 
@@ -157,8 +165,6 @@ Reason:
 If no dataset is detected, a brand-new Thread network could be created.
 
 This may break all existing Thread devices.
-
----
 
 ## Backup Strategy
 
@@ -188,13 +194,12 @@ Offline archive
 Encrypted USB drive
 ```
 
----
-
 ## Migration to New Hardware
 
 Supported migration path:
 
-Old ZimaBoard
+```text
+Old server
 ↓
 Backup dataset
 ↓
@@ -203,10 +208,9 @@ Deploy new server
 Restore dataset
 ↓
 All Thread devices continue working
+```
 
 No re-pairing required.
-
----
 
 ## Security Considerations
 
@@ -221,20 +225,10 @@ Recommendations:
 * Never publish dataset files.
 * Never commit dataset files to Git repositories.
 
----
+## Recovery Guide
 
-## LISA Edge Architecture
+See:
 
-Recommended placement:
-
-ZimaBoard:
-
-* OTBR
-* MQTT
-* NUT
-* DNS helpers
-* Infrastructure services
-
-Heavy AI workloads should remain on dedicated servers.
-
-OTBR should be considered a critical service and included in backup and disaster recovery plans.
+- [OTBR Recovery](../operations/otbr-recovery.md)
+- [Thread](thread.md)
+- [Matter](matter.md)

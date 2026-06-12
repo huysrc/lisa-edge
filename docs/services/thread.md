@@ -95,7 +95,7 @@ Matter
   ↓
 Thread
   ↓
-OTBR
+Border Router (OTBR)
   ↓
 Ethernet
 ```
@@ -106,9 +106,11 @@ Ethernet
 
 Benefits:
 
-* Local communication
+* Local-first communication
+* Low power consumption → Better battery life
 * Reduced cloud dependency
-* Better battery life
+* Self-healing mesh network
+* IPv6 native
 * Vendor-neutral ecosystem
 * Strong Matter support
 

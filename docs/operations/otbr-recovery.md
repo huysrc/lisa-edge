@@ -1,5 +1,9 @@
 # OTBR Disaster Recovery
 
+This guide is only for the OTBR service.
+
+OTBR recovery is separated from general backup documentation because the Thread dataset is uniquely important.
+
 ## Goal
 
 Recover a failed OTBR deployment without re-pairing Thread devices.
@@ -71,6 +75,7 @@ Verify network state.
 
 ```bash
 docker exec lisa-otbr ot-ctl state
+docker exec lisa-otbr ot-ctl dataset active -x
 ```
 
 Expected:
