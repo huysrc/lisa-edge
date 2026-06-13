@@ -7,7 +7,7 @@ Use Ubuntu Server or Debian.
 ## 2. Clone Repository
 
 ```bash
-git clone https://github.com/huysrc/lisa-edge.git
+git clone https://github.com/lisahq/lisa-edge.git
 cd lisa-edge
 ```
 

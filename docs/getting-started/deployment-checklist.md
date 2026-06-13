@@ -196,7 +196,7 @@ Required if:
 Clone repository:
 
 ```bash
-git clone https://github.com/huysrc/lisa-edge.git
+git clone https://github.com/lisahq/lisa-edge.git
 cd lisa-edge
 ```
 

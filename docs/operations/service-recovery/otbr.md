@@ -44,7 +44,7 @@ Install Linux.
 Clone LISA Edge.
 
 ```bash
-git clone https://github.com/huysrc/lisa-edge.git
+git clone https://github.com/lisahq/lisa-edge.git
 ```
 
 ### Step 3

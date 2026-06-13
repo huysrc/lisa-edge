@@ -93,7 +93,7 @@ autoinstall:
     ssh_pwauth: false
 
   late-commands:
-    - curtin in-target --target=/target -- git clone https://github.com/huysrc/lisa-edge.git /opt/lisa-edge
+    - curtin in-target --target=/target -- git clone https://github.com/lisahq/lisa-edge.git /opt/lisa-edge
     - curtin in-target --target=/target -- bash /opt/lisa-edge/bootstrap/bootstrap.sh
 
   updates: security
