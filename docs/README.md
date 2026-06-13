@@ -1,24 +1,46 @@
 # LISA Edge Documentation
 
-This documentation is organized around the role of LISA Edge as a lightweight Linux infrastructure layer for LISA AI Brain, smart homes, and homelabs.
+This documentation is organized around the role of LISA Edge as the lightweight local infrastructure layer for the LISA ecosystem.
+
+LISA Edge provides connectivity, messaging, secure access, service discovery, monitoring, backup, and recovery support.
+
+It is not the AI brain and should not become an all-in-one server.
+
+---
 
 ## Start Here
 
+- [About LISA](architecture/about-lisa.md)
+- [Ecosystem Overview](architecture/ecosystem-overview.md)
 - [Architecture Overview](architecture/overview.md)
-- [Hardware Model](hardware/hardware.md)
-- [Network Model](security/network-model.md)
-- [Service Catalog](services/README.md)
+- [Service Boundaries](architecture/service-boundaries.md)
+- [Reference Deployment](architecture/reference-deployment.md)
+- [Roadmap](roadmap.md)
+
+---
 
 ## Getting Started
 
 - [Quick Start](getting-started/quick-start.md)
+- [Deployment Checklist](getting-started/deployment-checklist.md)
+- [Deployment Validation](getting-started/deployment-validation.md)
 - [USB Autoinstall Flow](getting-started/autoinstall-flow.md)
+- [Service Selection](getting-started/service-selection.md)
+
+---
 
 ## Architecture
 
 - [Overview](architecture/overview.md)
-- [Hardware](hardware/hardware.md)
+- [About LISA](architecture/about-lisa.md)
+- [Ecosystem Overview](architecture/ecosystem-overview.md)
+- [Service Boundaries](architecture/service-boundaries.md)
+- [Reference Deployment](architecture/reference-deployment.md)
+- [Hardware Model](hardware/hardware.md)
+- [Storage Model](hardware/storage-model.md)
 - [Network Model](security/network-model.md)
+
+---
 
 ## Services
 
@@ -34,16 +56,20 @@ This documentation is organized around the role of LISA Edge as a lightweight Li
 - [DNS Helpers](services/dns.md)
 - [Reverse Proxy](services/reverse-proxy.md)
 
+---
+
 ## Operations
 
-- [Storage Model](hardware/storage-model.md)
 - [Backup and Restore](operations/backup-restore.md)
 - [Disaster Recovery](operations/disaster-recovery.md)
 - [OTBR Recovery](operations/service-recovery/otbr.md)
 - [Diagnostics](operations/diagnostics.md)
 
+---
+
 ## Security
 
 - [Security Model](security/security-model.md)
 - [Secrets](security/secrets.md)
+- [Network Model](security/network-model.md)
 - [UniFi Firewall Notes](security/unifi-firewall.md)

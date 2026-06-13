@@ -1,295 +1,337 @@
 # LISA Edge
+
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-Part of the **LISA** (Local Intelligent System Assistant) ecosystem.
+Part of the **LISA** ecosystem.
 
-LISA Edge provides the infrastructure layer that supports the broader LISA
-ecosystem while remaining useful as a standalone smart-home or homelab platform.
+**LISA** stands for **Local Intelligent System Assistant**.
 
-The project focuses on reliability, local-first operation, security, backup, and disaster recovery rather than AI workloads.
+LISA is a local-first AI ecosystem designed to become a true digital caretaker for intelligent environments. Its long-term goal is to understand context, coordinate smart-home devices, support natural interaction, and continue operating even when cloud services are unavailable.
 
-For an overview of the broader **LISA** project, see:
+**LISA Edge** is the infrastructure layer of that ecosystem.
 
-[About LISA](docs/architecture/about-lisa.md)
+It provides the local connectivity, messaging, networking, monitoring, backup, and operational services that allow the broader LISA platform to run reliably.
 
----
+LISA Edge is **not** the AI brain.  
+LISA Edge is the foundation that keeps the environment connected, recoverable, and locally available.
 
-# What is LISA Edge?
+For a broader overview, see:
 
-LISA Edge is a lightweight Linux infrastructure stack that provides local-first services required by:
-
-* LISA AI Brain
-* Matter deployments
-* Thread networks
-* Smart homes
-* Homelabs
-
-LISA Edge focuses on infrastructure rather than AI workloads.
-
-It may be used:
-
-* together with LISA AI Brain
-* as a standalone smart-home platform
-* as a homelab edge services node
+- [About LISA](docs/architecture/about-lisa.md)
+- [Ecosystem Overview](docs/architecture/ecosystem-overview.md)
 
 ---
 
-# Goals
+## Why LISA Edge Exists
 
-LISA Edge exists to provide:
+AI systems should not depend entirely on cloud connectivity, fragile integrations, or a single overloaded host running every service.
 
-* Thread Border Router (OTBR)
-* MQTT messaging
-* NUT (UPS integration)
-* DNS and service helpers
-* Reverse proxy
-* VPN endpoints
-* Monitoring and health checks
-* Backup and recovery automation
+LISA Edge exists to provide a resilient, secure, local-first infrastructure foundation for the LISA ecosystem.
 
-LISA Edge is intentionally lightweight.
+It focuses on:
 
-Heavy workloads belong on dedicated systems.
+- local availability
+- infrastructure services
+- secure connectivity
+- service discovery
+- edge automation support
+- network integration
+- backup and recovery
+- operational resilience
 
-Examples:
-
-* LLM inference
-* Speech processing
-* Computer vision
-* Large databases
-* NAS workloads
-* Video analytics
+If cloud services become unavailable, LISA Edge should continue supporting critical local infrastructure.
 
 ---
 
-# Architecture
+## What LISA Edge Provides
+
+LISA Edge is a lightweight Linux infrastructure stack for:
+
+- Thread Border Router services
+- Matter-over-Thread support
+- MQTT messaging
+- DNS and local service discovery
+- NTP / local time synchronization
+- reverse proxy and certificate management
+- VPN-first remote administration
+- health monitoring
+- backup jobs
+- restore procedures
+- infrastructure automation
+
+---
+
+## What LISA Edge Is Not
+
+LISA Edge should not become an all-in-one server.
+
+Avoid placing heavy workloads here unless explicitly justified.
+
+LISA Edge is generally **not**:
+
+- LISA Brain
+- an LLM inference server
+- a speech processing server
+- a memory or agent reasoning system
+- a primary NAS
+- a video analytics server
+- a large database host
+- a heavy camera processing node
+
+Those workloads belong on dedicated LISA Brain, NAS, Vision, or compute systems.
+
+See:
+
+- [Service Boundaries](docs/architecture/service-boundaries.md)
+
+---
+
+## LISA Ecosystem
 
 ```text
-Internet
-    │
-    ▼
-Network Infrastructure
-    │
-    ▼
-LISA Edge
-    │
-    ├── OTBR
-    ├── MQTT
-    ├── NUT
-    ├── VPN
-    ├── DNS Helpers
-    ├── Monitoring
-    └── Backup Services
-    │
-    ▼
-Matter / Thread / IoT Devices
+LISA Ecosystem
+
+                   Internet
+                      │
+                      ▼
+        ┌───────────────────────────┐
+        │ Network Infrastructure    │
+        │ UniFi / VLANs / Firewall  │
+        └───────────────────────────┘
+                      │
+                      ▼
+        ┌───────────────────────────┐
+        │ LISA Edge                 │
+        │ OTBR / MQTT / NUT / VPN   │
+        │ DNS / NTP / Monitoring    │
+        │ Backup / Restore          │
+        └───────────────────────────┘
+                      │
+                      ▼
+        ┌───────────────────────────┐
+        │ LISA Brain                │
+        │ AI Reasoning / Voice      │
+        │ Memory / Agents / Tools   │
+        └───────────────────────────┘
+                      │
+                      ▼
+        ┌───────────────────────────┐
+        │ Smart Home Environment    │
+        │ Matter / Thread / IoT     │
+        │ Homey / Home Assistant    │
+        └───────────────────────────┘
 ```
 
-LISA Edge is infrastructure.
-
-LISA Edge is not the AI server.
-
-For architecture guidance see:
-
-* docs/architecture/ARCHITECTURE.md
-* docs/architecture/reference-deployment.md
-* docs/architecture/service-boundaries.md
+LISA Edge supports intelligence.  
+It does not replace it.
 
 ---
 
-# Supported Platforms
+## Supported Platforms
 
-LISA Edge is hardware agnostic.
+LISA Edge is hardware-independent.
 
 Any Linux system capable of running Docker may be used.
 
 Examples:
 
-* ZimaBoard 2
-* Raspberry Pi 4
-* Raspberry Pi 5
-* Intel NUC
-* Mini PC
-* Generic x86-64 server
-* Ubuntu VM
-* Debian VM
+- ZimaBoard 2
+- Raspberry Pi 4 / 5
+- Intel NUC
+- Mini PC
+- generic x86-64 server
+- NAS Docker host
+- virtual machine
+- cloud VM
+
+Hardware is a deployment detail, not an architectural requirement.
 
 ---
 
-# Reference Platform
+## Reference Platform
 
-The recommended reference platform is:
+The current reference deployment target is:
 
-* ZimaBoard 2
+- ZimaBoard 2 1664
+- 16 GB RAM
+- 64 GB eMMC
+- UPS available
+- Samsung SATA SSD
+- Mellanox MCX312A-XCBT
+- future 10GbE networking
 
-Reasons:
+Recommended storage model:
 
-* Low power consumption
-* SATA support
-* PCIe expansion
-* Reliable Docker performance
-* Compact deployment footprint
+| Storage                | Purpose                                                                     |
+|------------------------|-----------------------------------------------------------------------------|
+| eMMC                   | Rescue OS, recovery environment, emergency maintenance                      |
+| SATA SSD               | Primary Ubuntu Server installation, Docker volumes, persistent service data |
+| NAS / External Storage | Backups, archives, restore images                                           |
 
-LISA Edge does not require ZimaBoard.
+### Design Rule
 
-All documentation and testing are primarily validated against this platform.
+LISA Edge should boot from SSD.  
+Avoid heavy writes to eMMC.
 
----
-
-# Core Services
-
-| Service       | Purpose                  |
-| ------------- | ------------------------ |
-| OTBR          | Thread Border Router     |
-| MQTT          | Event messaging          |
-| NUT           | UPS monitoring           |
-| Reverse Proxy | Internal service routing |
-| Tailscale     | Secure remote access     |
-| Uptime Kuma   | Service monitoring       |
-| DNS Helpers   | Local service discovery  |
-| NTP           | Time synchronization     |
+The onboard eMMC should be preserved as an independent rescue and recovery environment whenever practical..  
+This provides an additional recovery path if the primary SSD installation becomes unavailable.
 
 See:
 
-* docs/services/
+- [Reference Deployment](docs/architecture/reference-deployment.md)
 
 ---
 
-# Thread and Matter
+## LISA Edge Services
 
-LISA Edge supports Matter-over-Thread deployments through OpenThread Border Router (OTBR).
+| Service        | Purpose                                     |
+|----------------|---------------------------------------------|
+| MQTT           | Local event messaging                       |
+| Uptime Kuma    | Lightweight monitoring                      |
+| Backup helper  | Backup and restore workflow support         |
+| OTBR           | Thread Border Router                        |
+| NUT            | UPS monitoring and graceful shutdown        |
+| VPN            | Secure remote administration                |
+| DNS helpers    | Local name resolution and service discovery |
+| NTP / Chrony   | Reliable local time sync                    |
+| Reverse Proxy  | Internal service routing                    |
 
-Important:
+See:
+
+- [Service Catalog](docs/services/README.md)
+
+---
+
+## Thread and Matter
+
+LISA Edge supports Matter-over-Thread deployments through OpenThread Border Router.
 
 The Thread Dataset is critical infrastructure.
 
-Loss of the dataset may require re-pairing Matter-over-Thread devices.
+Losing the dataset may require re-pairing Matter-over-Thread devices.
 
-LISA Edge includes support for:
+LISA Edge documentation includes:
 
-* Dataset backup
-* Dataset restore
-* Migration workflows
-* Disaster recovery procedures
-
-Documentation:
-
-* [docs/services/thread.md](docs/services/thread.md)
-* [docs/services/matter.md](docs/services/matter.md)
-* [docs/services/otbr.md](docs/services/otbr.md)
-* [docs/operations/service-recovery/otbr.md](docs/operations/service-recovery/otbr.md)
-
----
-
-# Getting Started
-
-Before deployment:
-
-* Review deployment requirements
-* Select required services
-* Configure networking
-* Configure backups
-
-Documentation:
-
-* [docs/getting-started/deployment-checklist.md](docs/getting-started/deployment-checklist.md)
-* [docs/getting-started/service-selection.md](docs/getting-started/service-selection.md)
-* [docs/getting-started/autoinstall-flow.md](docs/getting-started/autoinstall-flow.md)
-
-Clone repository:
-
-```bash
-git clone https://github.com/lisahq/lisa-edge.git
-cd lisa-edge
-```
-
-Configure environment:
-
-```bash
-cp .env.example .env
-```
-
-Deploy:
-
-```bash
-./scripts/deploy.sh
-```
-
----
-
-# Security Principles
-
-LISA Edge follows a security-first approach.
-
-Recommendations:
-
-* SSH key authentication
-* VPN-first administration
-* Minimal exposed ports
-* VLAN segmentation
-* Secrets outside Git
-* Regular backups
-* Recovery testing
+- dataset backup
+- dataset restore
+- migration workflows
+- disaster recovery procedures
 
 See:
 
-* docs/security/
+- [Thread](docs/services/thread.md)
+- [Matter](docs/services/matter.md)
+- [OTBR](docs/services/otbr.md)
+- [OTBR Recovery](docs/operations/service-recovery/otbr.md)
 
 ---
 
-# Backup and Recovery
+## Getting Started
 
-Critical services should be recoverable from backup.
+Start here:
 
-LISA Edge emphasizes:
+- [Documentation Index](docs/README.md)
+- [Quick Start](docs/getting-started/quick-start.md)
+- [Deployment Checklist](docs/getting-started/deployment-checklist.md)
+- [Deployment Validation](docs/getting-started/deployment-validation.md)
+- [USB Autoinstall Flow](docs/getting-started/autoinstall-flow.md)
 
-* Infrastructure as code
-* Docker Compose
-* Portable volumes
-* Automated backups
-* Minimal manual intervention
+Basic flow:
 
-Documentation:
-
-* docs/operations/
-
----
-
-# Documentation Structure
-
-```text
-docs/
-│
-├── architecture/
-├── getting-started/
-├── services/
-├── operations/
-├── security/
-├── hardware/
-└── README.md
+```bash
+git clone https://github.com/LisaHQ/lisa-edge.git
+cd lisa-edge
+cp .env.example .env
+sudo ./bootstrap/bootstrap.sh
+sudo ./scripts/deploy.sh
+sudo ./scripts/healthcheck.sh
 ```
 
 ---
 
-# Design Philosophy
+## Security Principles
 
-LISA Edge is:
+LISA Edge follows a security-first approach.
 
-* Linux-first
-* Docker-first
-* Local-first
-* Hardware agnostic
-* Recovery focused
+Recommended defaults:
 
-LISA Edge is infrastructure.
+- VPN-first administration
+- SSH key authentication
+- no public admin dashboards
+- minimal exposed ports
+- VLAN segmentation
+- firewall allow-lists
+- least privilege
+- secrets outside Git
+- regular backups
+- restore testing
 
-It is not intended to become an all-in-one server.
+High-sensitivity networks such as alarm, access-control, camera, and management VLANs should receive additional protection.
+
+See:
+
+- [Security Model](docs/security/security-model.md)
+- [Network Model](docs/security/network-model.md)
+- [UniFi Firewall Notes](docs/security/unifi-firewall.md)
 
 ---
 
-# License
+## Backup and Recovery
+
+LISA Edge prioritizes recovery over unnecessary clustering.
+
+Priority order:
+
+1. backup
+2. restore
+3. reliability
+4. failover
+
+Critical services should provide:
+
+- backup procedure
+- restore procedure
+- health checks
+- restart policies
+- exportable configuration
+
+A failed LISA Edge host should be replaceable from source-controlled configuration and backups.
+
+See:
+
+- [Backup and Restore](docs/operations/backup-restore.md)
+- [Disaster Recovery](docs/operations/disaster-recovery.md)
+
+---
+
+## Roadmap
+
+See:
+
+- [Roadmap](docs/roadmap.md)
+
+---
+
+## Design Philosophy
+
+LISA Edge is:
+
+- Linux-first
+- Docker-first
+- local-first
+- security-conscious
+- hardware-independent
+- recovery-focused
+- practical immutable infrastructure
+
+Infrastructure exists to support intelligence, not replace it.
+
+---
+
+## License
 
 Licensed under the **Apache 2.0** License.
+
 See [LICENSE](LICENSE) for details.
 
 This repository provides the infrastructure layer of the LISA ecosystem.
