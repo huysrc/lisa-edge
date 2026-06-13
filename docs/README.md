@@ -5,8 +5,8 @@ This documentation is organized around the role of LISA Edge as a lightweight Li
 ## Start Here
 
 - [Architecture Overview](architecture/overview.md)
-- [Hardware Model](architecture/hardware.md)
-- [Network Model](architecture/network-model.md)
+- [Hardware Model](hardware/hardware.md)
+- [Network Model](security/network-model.md)
 - [Service Catalog](services/README.md)
 
 ## Getting Started
@@ -17,8 +17,8 @@ This documentation is organized around the role of LISA Edge as a lightweight Li
 ## Architecture
 
 - [Overview](architecture/overview.md)
-- [Hardware](architecture/hardware.md)
-- [Network Model](architecture/network-model.md)
+- [Hardware](hardware/hardware.md)
+- [Network Model](security/network-model.md)
 
 ## Services
 
@@ -36,10 +36,10 @@ This documentation is organized around the role of LISA Edge as a lightweight Li
 
 ## Operations
 
-- [Storage Model](operations/storage-model.md)
+- [Storage Model](hardware/storage-model.md)
 - [Backup and Restore](operations/backup-restore.md)
 - [Disaster Recovery](operations/disaster-recovery.md)
-- [OTBR Recovery](operations/otbr-recovery.md)
+- [OTBR Recovery](operations/service-recovery/otbr.md)
 - [Diagnostics](operations/diagnostics.md)
 
 ## Security

@@ -229,6 +229,6 @@ Recommendations:
 
 See:
 
-- [OTBR Recovery](../operations/otbr-recovery.md)
+- [OTBR Recovery](../operations/service-recovery/otbr.md)
 - [Thread](thread.md)
 - [Matter](matter.md)

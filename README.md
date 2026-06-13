@@ -1,10 +1,36 @@
 # LISA Edge
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-Lightweight edge infrastructure services for smart homes, Matter, Thread, and local-first automation.
+Part of the **LISA** (Local Intelligent System Assistant) ecosystem.
 
-LISA Edge provides the infrastructure layer that supports the larger LISA ecosystem.
+LISA Edge provides the infrastructure layer that supports the broader LISA
+ecosystem while remaining useful as a standalone smart-home or homelab platform.
 
-It focuses on reliability, local operation, disaster recovery, and infrastructure services rather than AI workloads.
+The project focuses on reliability, local-first operation, security, backup, and disaster recovery rather than AI workloads.
+
+For an overview of the broader **LISA** project, see:
+
+[About LISA](docs/architecture/about-lisa.md)
+
+---
+
+# What is LISA Edge?
+
+LISA Edge is a lightweight Linux infrastructure stack that provides local-first services required by:
+
+* LISA AI Brain
+* Matter deployments
+* Thread networks
+* Smart homes
+* Homelabs
+
+LISA Edge focuses on infrastructure rather than AI workloads.
+
+It may be used:
+
+* together with LISA AI Brain
+* as a standalone smart-home platform
+* as a homelab edge services node
 
 ---
 
@@ -23,13 +49,16 @@ LISA Edge exists to provide:
 
 LISA Edge is intentionally lightweight.
 
-Heavy workloads belong on dedicated servers:
+Heavy workloads belong on dedicated systems.
+
+Examples:
 
 * LLM inference
 * Speech processing
 * Computer vision
-* Databases
+* Large databases
 * NAS workloads
+* Video analytics
 
 ---
 
@@ -39,7 +68,7 @@ Heavy workloads belong on dedicated servers:
 Internet
     │
     ▼
-Network Gateway (UniFi)
+Network Infrastructure
     │
     ▼
 LISA Edge
@@ -49,11 +78,22 @@ LISA Edge
     ├── NUT
     ├── VPN
     ├── DNS Helpers
-    └── Monitoring
+    ├── Monitoring
+    └── Backup Services
     │
     ▼
 Matter / Thread / IoT Devices
 ```
+
+LISA Edge is infrastructure.
+
+LISA Edge is not the AI server.
+
+For architecture guidance see:
+
+* docs/architecture/ARCHITECTURE.md
+* docs/architecture/reference-deployment.md
+* docs/architecture/service-boundaries.md
 
 ---
 
@@ -71,7 +111,8 @@ Examples:
 * Intel NUC
 * Mini PC
 * Generic x86-64 server
-* Virtual Machine
+* Ubuntu VM
+* Debian VM
 
 ---
 
@@ -89,6 +130,8 @@ Reasons:
 * Reliable Docker performance
 * Compact deployment footprint
 
+LISA Edge does not require ZimaBoard.
+
 All documentation and testing are primarily validated against this platform.
 
 ---
@@ -96,13 +139,19 @@ All documentation and testing are primarily validated against this platform.
 # Core Services
 
 | Service       | Purpose                  |
-|---------------| ------------------------ |
+| ------------- | ------------------------ |
 | OTBR          | Thread Border Router     |
 | MQTT          | Event messaging          |
-| NUT           | UPS integration          |
+| NUT           | UPS monitoring           |
 | Reverse Proxy | Internal service routing |
-| Tailscale     | Remote access            |
-| Uptime Kuma   | Health monitoring        |
+| Tailscale     | Secure remote access     |
+| Uptime Kuma   | Service monitoring       |
+| DNS Helpers   | Local service discovery  |
+| NTP           | Time synchronization     |
+
+See:
+
+* docs/services/
 
 ---
 
@@ -116,28 +165,41 @@ The Thread Dataset is critical infrastructure.
 
 Loss of the dataset may require re-pairing Matter-over-Thread devices.
 
-LISA Edge includes:
+LISA Edge includes support for:
 
 * Dataset backup
 * Dataset restore
-* Migration support
-* Disaster recovery automation
+* Migration workflows
+* Disaster recovery procedures
 
-See:
+Documentation:
 
-* docs/THREAD.md
-* docs/MATTER.md
-* docs/OTBR.md
-* docs/OTBR-RECOVERY.md
+* [docs/services/thread.md](docs/services/thread.md)
+* [docs/services/matter.md](docs/services/matter.md)
+* [docs/services/otbr.md](docs/services/otbr.md)
+* [docs/operations/service-recovery/otbr.md](docs/operations/service-recovery/otbr.md)
 
 ---
 
-# Deployment
+# Getting Started
+
+Before deployment:
+
+* Review deployment requirements
+* Select required services
+* Configure networking
+* Configure backups
+
+Documentation:
+
+* [docs/getting-started/deployment-checklist.md](docs/getting-started/deployment-checklist.md)
+* [docs/getting-started/service-selection.md](docs/getting-started/service-selection.md)
+* [docs/getting-started/autoinstall-flow.md](docs/getting-started/autoinstall-flow.md)
 
 Clone repository:
 
 ```bash
-git clone https://github.com/huysrc/lisa-edge.git
+git clone https://github.com/lisahq/lisa-edge.git
 cd lisa-edge
 ```
 
@@ -155,32 +217,83 @@ Deploy:
 
 ---
 
-# Disaster Recovery
+# Security Principles
+
+LISA Edge follows a security-first approach.
+
+Recommendations:
+
+* SSH key authentication
+* VPN-first administration
+* Minimal exposed ports
+* VLAN segmentation
+* Secrets outside Git
+* Regular backups
+* Recovery testing
+
+See:
+
+* docs/security/
+
+---
+
+# Backup and Recovery
 
 Critical services should be recoverable from backup.
 
 LISA Edge emphasizes:
 
-* Config as code
+* Infrastructure as code
 * Docker Compose
 * Portable volumes
 * Automated backups
 * Minimal manual intervention
 
+Documentation:
+
+* docs/operations/
+
 ---
 
-# Security Principles
+# Documentation Structure
 
+```text
+docs/
+│
+├── architecture/
+├── getting-started/
+├── services/
+├── operations/
+├── security/
+├── hardware/
+└── README.md
+```
+
+---
+
+# Design Philosophy
+
+LISA Edge is:
+
+* Linux-first
+* Docker-first
 * Local-first
-* VPN-first administration
-* SSH key authentication
-* Minimal exposed ports
-* VLAN segmentation
-* Secrets outside Git
-* Backup critical datasets
+* Hardware agnostic
+* Recovery focused
+
+LISA Edge is infrastructure.
+
+It is not intended to become an all-in-one server.
 
 ---
 
 # License
 
-MIT License
+Licensed under the **Apache 2.0** License.
+See [LICENSE](LICENSE) for details.
+
+This repository provides the infrastructure layer of the LISA ecosystem.
+
+The license applies only to this repository and does not grant rights to proprietary LISA components, models, datasets, or private services.
+
+Copyright (c) 2026 **[LisaHQ](https://lisahq.io)**

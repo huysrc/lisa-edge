@@ -1,6 +1,6 @@
 # Hardware Model
 
-LISA Edge is hardware agnostic.
+LISA Edge is hardware-agnostic.
 
 Any Linux host capable of running Docker can be used.
 
